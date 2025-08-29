@@ -1,8 +1,10 @@
-
 import axios from "axios";
 import type { Note, NoteId } from "../types/note";
 
 axios.defaults.baseURL = "https://notehub-public.goit.study/api";
+axios.defaults.headers.common["Authorization"] = `Bearer ${
+  import.meta.env.VITE_NOTEHUB_TOKEN
+}`;
 
 export interface NotesResponse {
   notes: Note[];
@@ -17,15 +19,7 @@ export const fetchNotes = async (
   const params: Record<string, string | number> = { page, perPage };
   if (search) params.search = search;
 
-  const { data } = await axios.get<NotesResponse>("/notes", {
-    params: {
-      page,
-      perPage,
-    },
-    headers: {
-Authorization: `Bearer ${import.meta.env.VITE_NOTEHUB_TOKEN}`
-    }
-  });
+  const { data } = await axios.get<NotesResponse>("/notes", { params });
   return data;
 };
 
