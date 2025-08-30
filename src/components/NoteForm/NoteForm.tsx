@@ -14,7 +14,7 @@ export interface NoteFormValues {
 
 interface NoteFormProps {
   initialValues?: NoteFormValues;
-  onCancel: () => void;
+  onClose: () => void;
 }
 
 const validationSchema = Yup.object({
@@ -32,7 +32,7 @@ const validationSchema = Yup.object({
 
 export default function NoteForm({
   initialValues = { title: "", content: "", tag: "Todo" },
-  onCancel,
+  onClose,
 }: NoteFormProps) {
   const queryClient = useQueryClient();
 
@@ -51,7 +51,7 @@ export default function NoteForm({
         mutation.mutate(values, {
           onSuccess: () => {
             resetForm();
-            onCancel(); // закриваємо модальне вікно
+            onClose(); // закриваємо модальне вікно
           },
           onSettled: () => setSubmitting(false),
         });
@@ -97,7 +97,7 @@ export default function NoteForm({
             <button
               type="button"
               className={css.cancelButton}
-              onClick={onCancel}
+              onClick={onClose}
             >
               Cancel
             </button>

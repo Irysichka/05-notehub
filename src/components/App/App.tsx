@@ -28,7 +28,7 @@ export default function App() {
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, isFetching } = useQuery({
-    queryKey: ["notes", currentPage, perPage, search],
+    queryKey: ["notes", currentPage, search],
     queryFn: () => fetchNotes(currentPage, perPage, search),
     placeholderData: keepPreviousData,
   });
@@ -44,6 +44,11 @@ export default function App() {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
+  const handleSearch = (value: string) => {
+  setSearchInput(value);
+  setCurrentPage(1);
+  };
+  
   useEffect(() => {
     const handler = setTimeout(() => {
       setSearch(searchInput);
@@ -59,7 +64,7 @@ export default function App() {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox onSearch={setSearchInput} />
+        <SearchBox onSearch={handleSearch} />
         <button className={css.button} onClick={handleOpenModal}>
           Create note +
         </button>
@@ -98,7 +103,7 @@ export default function App() {
 
         {isModalOpen && (
           <Modal onClose={handleCloseModal}>
-            <NoteForm onCancel={handleCloseModal} />
+            <NoteForm onClose={handleCloseModal} />
           </Modal>
         )}
       </main>
