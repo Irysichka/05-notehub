@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import css from "./App.module.css";
 import { Toaster } from "react-hot-toast"
 import {
@@ -9,6 +9,7 @@ import {
   keepPreviousData,
 } from "@tanstack/react-query";
 import { fetchNotes, createNote } from "../../services/noteService";
+import { useDebouncedCallback } from "use-debounce";
 
 import NoteList from "../NoteList/NoteList";
 import Pagination from "../Pagination/Pagination";
@@ -21,8 +22,8 @@ import NoteForm from "../NoteForm/NoteForm";
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
+  const [search, setSearchInput] = useState("");
+
 
   const perPage = 8;
   const queryClient = useQueryClient();
@@ -44,20 +45,11 @@ export default function App() {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const handleSearch = (value: string) => {
-  setSearchInput(value);
-  setCurrentPage(1);
-  };
+  const handleSearch = useDebouncedCallback((value: string) => {
+    setSearchInput(value);
+    setCurrentPage(1);
+  }, 500);
   
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setSearch(searchInput);
-      setCurrentPage(1);
-    }, 500);
-
-    return () => clearTimeout(handler);
-  }, [searchInput]);
-
   const hasResults = !!data?.notes?.length;
   const totalPages = data?.totalPages ?? 1;
 
